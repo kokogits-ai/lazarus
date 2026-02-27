@@ -9,15 +9,19 @@ const port = 3000;
 
 // This is the CROS PROTOCOL 
 
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:5500', 'http://streeteasy.com'],  // fallback for local
+// app.use(cors({
+//   origin: process.env.ALLOWED_ORIGINS
+//     ? process.env.ALLOWED_ORIGINS.split(',')
+//     : ['http://localhost:5500', 'http://streeteasy.com'],  // fallback for local
 
-  credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+//   credentials: true,
+//   methods: ['GET', 'POST', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+// }));
+
+
+app.use(cors())
+
 
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
